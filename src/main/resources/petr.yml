@@ -4,6 +4,9 @@ info:
   title: Petr API
   description: API for Petr's application
 
+servers:
+  - url: https://localhost:8080
+
 paths:
   /books:
     get:
