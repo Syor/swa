@@ -31,9 +31,9 @@ public class BookController {
 
         List<Book> books = bookService.getAllBooks();
 
-        response.data(books);
+        response.setData(books);
 
-        return new ResponseEntity<BooksResponse>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping
@@ -50,9 +50,9 @@ public class BookController {
     public ResponseEntity<Book> getBook(@PathVariable("isbn") String bookIsbn) {
         try {
             Book book = bookService.getBook(bookIsbn);
-            return new ResponseEntity<Book>(book, HttpStatus.OK);
+            return new ResponseEntity<>(book, HttpStatus.OK);
         } catch (InvalidParameterException e) {
-            return new ResponseEntity<Book>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -61,11 +61,11 @@ public class BookController {
                                          @RequestBody NewBook newBook) {
         try {
             bookService.updateBook(newBook, bookIsbn);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (InvalidParameterException e) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -73,9 +73,9 @@ public class BookController {
     public ResponseEntity<Void> deleteBook(@PathVariable("isbn") String bookIsbn) {
         try {
             bookService.deleteBook(bookIsbn);
-            return new ResponseEntity<Void>(HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (InvalidParameterException e) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
