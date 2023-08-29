@@ -2,6 +2,7 @@ package cz.cvut.fel.swa.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import java.util.Objects;
 
@@ -9,6 +10,7 @@ import java.util.Objects;
  * Author
  */
 @Entity
+@Table(name = "tab_authors")
 public class Author   {
   @JsonProperty("id")
   private Integer id;

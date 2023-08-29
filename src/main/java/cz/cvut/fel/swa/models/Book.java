@@ -2,6 +2,7 @@ package cz.cvut.fel.swa.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import javax.validation.Valid;
 import java.util.Objects;
@@ -10,6 +11,7 @@ import java.util.Objects;
  * Book
  */
 @Entity
+@Table(name = "tab_books")
 public class Book   {
   @JsonProperty("id")
   private Integer id;
