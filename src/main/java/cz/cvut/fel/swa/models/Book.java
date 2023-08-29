@@ -1,8 +1,7 @@
 package cz.cvut.fel.swa.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import javax.validation.Valid;
 import java.util.Objects;
@@ -13,6 +12,9 @@ import java.util.Objects;
 @Entity
 @Table(name = "tab_books")
 public class Book   {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @JsonProperty("id")
   private Integer id;
 
@@ -31,8 +33,12 @@ public class Book   {
   @JsonProperty("genre")
   private String genre;
 
+  @ManyToOne
   @JsonProperty("author")
   private Author author;
+
+  public Book() {
+  }
 
   public Integer getId() {
     return id;

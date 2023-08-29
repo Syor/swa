@@ -1,8 +1,7 @@
 package cz.cvut.fel.swa.models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.Objects;
 
@@ -11,7 +10,10 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "tab_authors")
-public class Author   {
+public class Author {
+
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @JsonProperty("id")
   private Integer id;
 
@@ -23,6 +25,9 @@ public class Author   {
 
   @JsonProperty("birth")
   private String birth;
+
+  public Author() {
+  }
 
   public Integer getId() {
     return id;
