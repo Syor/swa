@@ -11,18 +11,14 @@ import java.util.Objects;
  */
 @Entity
 @Table(name = "tab_books")
-public class Book   {
+public class Book {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  @JsonProperty("id")
-  private Integer id;
+  @JsonProperty("isbn")
+  private String isbn;
 
   @JsonProperty("title")
   private String title;
-
-  @JsonProperty("isbn")
-  private String isbn;
 
   @JsonProperty("published")
   private String published;
@@ -38,14 +34,6 @@ public class Book   {
   private Author author;
 
   public Book() {
-  }
-
-  public Integer getId() {
-    return id;
-  }
-
-  public void setId(Integer id) {
-    this.id = id;
   }
 
   public String getTitle() {
@@ -99,9 +87,8 @@ public class Book   {
   @Override
   public String toString() {
     return "Book{" +
-            "id=" + id +
+            "isbn='" + isbn + '\'' +
             ", title='" + title + '\'' +
-            ", isbn='" + isbn + '\'' +
             ", published='" + published + '\'' +
             ", language='" + language + '\'' +
             ", genre='" + genre + '\'' +
