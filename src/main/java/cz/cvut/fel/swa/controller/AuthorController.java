@@ -5,6 +5,7 @@ import cz.cvut.fel.swa.models.*;
 import cz.cvut.fel.swa.service.AuthorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -28,10 +29,21 @@ public class AuthorController {
         try{
             List<Book> books = authorService.getAuthorBooks(authorId);
             BooksResponse response = new BooksResponse();
-            response.setTotalPages(100);
-            response.setData(books);
+
+            if(page != null && pageSize != null)
+            {
+                response.setTotalPages(books.size() / pageSize + 1);
+                response.setPage(page);
+                response.setPageSize(pageSize);
+                response.setData(books.subList(page * pageSize, Math.min((page + 1) * pageSize, books.size())));
+            }
+            else
+            {
+                response.setData(books);
+            }
+
             return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidParameterException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -43,7 +55,7 @@ public class AuthorController {
         try{
             authorService.deleteAuthor(authorId);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidParameterException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
@@ -55,7 +67,7 @@ public class AuthorController {
         try{
             Author author = authorService.getAuthor(authorId);
             return new ResponseEntity<>(author, HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
+        } catch (InvalidParameterException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -67,17 +79,29 @@ public class AuthorController {
             authorService.updateAuthor(authorId, newAuthor);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (InvalidParameterException e) {
-            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<Void>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (DataIntegrityViolationException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
     @GetMapping()
     public ResponseEntity<AuthorsResponse> getAuthors(@RequestParam(value = "page", required = false) Integer page,
                                                       @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        AuthorsResponse authorsResponse = new AuthorsResponse();
-        return new ResponseEntity<>(authorsResponse, HttpStatus.OK);
+        AuthorsResponse response = new AuthorsResponse();
+
+        List<Author> authors = authorService.getAllAuthors();
+
+        if (page != null && pageSize != null) {
+            response.setPage(page);
+            response.setPageSize(pageSize);
+            response.setTotalPages(authors.size() / pageSize + 1);
+            response.setData(authors.subList(page * pageSize, Math.min((page + 1) * pageSize, authors.size())));
+        } else {
+            response.setData(authors);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
@@ -87,7 +111,7 @@ public class AuthorController {
         try{
             Integer authorId = authorService.putAuthor(newAuthor);
             return new ResponseEntity<Integer>(authorId, HttpStatus.OK);
-        } catch (InvalidParameterException e) {
+        } catch (InvalidParameterException | DataIntegrityViolationException e) {
             return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }

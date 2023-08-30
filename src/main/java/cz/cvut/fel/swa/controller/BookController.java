@@ -5,7 +5,9 @@ import cz.cvut.fel.swa.models.NewBook;
 import cz.cvut.fel.swa.models.Book;
 
 import cz.cvut.fel.swa.service.BookService;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,14 +27,17 @@ public class BookController {
                                                   @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                                   @RequestParam(value = "title", required = false) String title) {
         BooksResponse response = new BooksResponse();
-        response.setPage(page);
-        response.setPageSize(pageSize);
-        response.setTotalPages(100);
 
         List<Book> books = bookService.getAllBooks();
 
-        response.setData(books);
-
+        if (page != null && pageSize != null) {
+            response.setPage(page);
+            response.setPageSize(pageSize);
+            response.setTotalPages(books.size() / pageSize + 1);
+            response.setData(books.subList(page * pageSize, Math.min((page + 1) * pageSize, books.size())));
+        } else {
+            response.setData(books);
+        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -41,7 +46,7 @@ public class BookController {
         try {
             bookService.createBook(newBook);
             return new ResponseEntity<>(newBook.getIsbn(), HttpStatus.CREATED);
-        } catch (InvalidParameterException e) {
+        } catch (InvalidParameterException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -64,7 +69,7 @@ public class BookController {
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (InvalidParameterException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
+        } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }

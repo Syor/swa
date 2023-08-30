@@ -2,41 +2,64 @@ package cz.cvut.fel.swa.service;
 
 import cz.cvut.fel.swa.models.Book;
 import cz.cvut.fel.swa.models.NewBook;
+import cz.cvut.fel.swa.repository.BooksRepository;
+import org.postgresql.util.PSQLException;
 import org.springframework.beans.InvalidPropertyException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookService {
-    public List<Book> getAllBooks()
-    {
-        Book book1 = new Book();
-        book1.setTitle("book1");
-        Book book2 = new Book();
-        book2.setTitle("book2");
 
-        return List.of(book1, book2);
+    @Autowired
+    BooksRepository booksRepository;
+
+    public List<Book> getAllBooks() {
+        return booksRepository.findAll();
     }
 
-    public Book getBook(String bookIsbn) throws InvalidParameterException
-    {
-        return new Book();
+    public Book getBook(String bookIsbn) throws InvalidParameterException {
+        Optional<Book> book = booksRepository.findById(bookIsbn);
+        if(book.isEmpty())
+        {
+            throw new InvalidParameterException("Book with requested isbn does not exist");
+        }
+        return book.get();
     }
 
-    public void deleteBook(String bookIsbn) throws InvalidParameterException
-    {
+    public void deleteBook(String bookIsbn) throws InvalidParameterException {
+        Optional<Book> book = booksRepository.findById(bookIsbn);
+        if (book.isEmpty()) {
+            throw new InvalidParameterException();
+        }
+        booksRepository.delete(book.get());
+    }
+
+    public String createBook(NewBook newBook) throws InvalidParameterException{
+        Book book = new Book(newBook);
+
+        Optional<Book> sameBook = booksRepository.findById(newBook.getIsbn());
+        if (sameBook.isPresent()) {
+            throw new InvalidParameterException("Book with same isbn already exists");
+        }
+        booksRepository.save(book);
+        return newBook.getIsbn();
 
     }
 
-    public String createBook(NewBook newBook) throws InvalidParameterException
-    {
-        return "isbn";
-    }
+    public void updateBook(NewBook newBook, String bookIsbn) throws InvalidParameterException{
 
-    public void updateBook(NewBook newBook, String bookIsbn) throws InvalidParameterException, IllegalArgumentException
-    {
+        Optional<Book> book = booksRepository.findById(bookIsbn);
+        if (book.isEmpty()) {
+            throw new InvalidParameterException();
+        }
+        Book currBook = book.get();
+        currBook.updateBook(newBook);
+        booksRepository.save(currBook);
 
     }
 }

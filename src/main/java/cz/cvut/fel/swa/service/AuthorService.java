@@ -3,57 +3,76 @@ package cz.cvut.fel.swa.service;
 import cz.cvut.fel.swa.models.Author;
 import cz.cvut.fel.swa.models.Book;
 import cz.cvut.fel.swa.models.NewAuthor;
+import cz.cvut.fel.swa.repository.AuthorsRepository;
+import cz.cvut.fel.swa.repository.BooksRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AuthorService {
 
-    public List<Book> getAuthorBooks(Integer authorId) throws IllegalArgumentException
-    {
-        Book book1 = new Book();
-        book1.setTitle("book1");
-        Book book2 = new Book();
-        book2.setTitle("book2");
+    @Autowired
+    AuthorsRepository authorsRepository;
 
-        return List.of(book1, book2);
+    @Autowired
+    BooksRepository booksRepository;
+
+    public List<Book> getAuthorBooks(Integer authorId) throws InvalidParameterException
+    {
+        Optional<Author> author = authorsRepository.findById(authorId);
+        if(author.isEmpty())
+        {
+            throw new InvalidParameterException();
+        }
+        //return booksRepository.findByAuthor(authorId);
+        return null;
     }
 
-    public void deleteAuthor(Integer authorId) throws IllegalArgumentException
+    public void deleteAuthor(Integer authorId) throws InvalidParameterException
     {
-
+        Optional<Author> author = authorsRepository.findById(authorId);
+        if(author.isEmpty())
+        {
+            throw new InvalidParameterException();
+        }
+        authorsRepository.delete(author.get());
     }
 
-    public Author getAuthor(Integer authorId) throws IllegalArgumentException
+    public Author getAuthor(Integer authorId) throws InvalidParameterException
     {
-        Author author = new Author();
-        author.setName("Pepa");
-        author.setSurname("Klacek");
-        return author;
+        Optional<Author> author = authorsRepository.findById(authorId);
+        if(author.isEmpty())
+        {
+            throw new InvalidParameterException();
+        }
+        return author.get();
     }
 
-    public void updateAuthor(Integer authorId, NewAuthor newAuthor) throws InvalidParameterException, IllegalArgumentException
+    public void updateAuthor(Integer authorId, NewAuthor newAuthor) throws InvalidParameterException
     {
-
+        Optional<Author> author = authorsRepository.findById(authorId);
+        if(author.isEmpty())
+        {
+            throw new InvalidParameterException();
+        }
+        Author currAuthor = author.get();
+        currAuthor.updateAuthor(newAuthor);
+        authorsRepository.save(currAuthor);
     }
 
     public List<Author> getAllAuthors()
     {
-        Author author = new Author();
-        author.setName("Pepa");
-        author.setSurname("Klacek");
-
-        Author author2 = new Author();
-        author2.setName("Pepík");
-        author2.setSurname("Klacík");
-
-        return List.of(author, author2);
+        return authorsRepository.findAll();
     }
 
     public Integer putAuthor(NewAuthor newAuthor) throws InvalidParameterException
     {
-        return 100;
+        Author author = new Author(newAuthor);
+        authorsRepository.save(author);
+        return author.getId();
     }
 }

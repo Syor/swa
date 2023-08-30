@@ -29,11 +29,20 @@ public class Book {
   @JsonProperty("genre")
   private String genre;
 
-  @ManyToOne
   @JsonProperty("author")
-  private Author author;
+  private Integer author;
 
   public Book() {
+  }
+
+  public Book(NewBook book)
+  {
+    this.author = book.getAuthor();
+    this.genre = book.getGenre();
+    this.isbn = book.getIsbn();
+    this.language = book.getLanguage();
+    this.title = book.getTitle();
+    this.published = book.getPublished();
   }
 
   public String getTitle() {
@@ -76,12 +85,21 @@ public class Book {
     this.genre = genre;
   }
 
-  public Author getAuthor() {
+  public Integer getAuthor() {
     return author;
   }
 
-  public void setAuthor(Author author) {
+  public void setAuthor(Integer author) {
     this.author = author;
+  }
+
+  public void updateBook(NewBook newBook)
+  {
+    if(newBook.getAuthor() != null) this.author = newBook.getAuthor();
+    if(newBook.getGenre() != null) this.genre = newBook.getGenre();
+    if(newBook.getLanguage() != null) this.language = newBook.getLanguage();
+    if(newBook.getPublished() != null) this.published = newBook.getPublished();
+    if(newBook.getTitle() != null) this.title = newBook.getTitle();
   }
 
   @Override

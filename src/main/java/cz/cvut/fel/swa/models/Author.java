@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Author
@@ -13,7 +14,7 @@ import java.util.Objects;
 public class Author {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @JsonProperty("id")
   private Integer id;
 
@@ -27,6 +28,13 @@ public class Author {
   private String birth;
 
   public Author() {
+  }
+
+  public Author(NewAuthor newAuthor)
+  {
+    this.birth = newAuthor.getBirth();
+    this.name = newAuthor.getName();
+    this.surname = newAuthor.getSurname();
   }
 
   public Integer getId() {
@@ -59,6 +67,13 @@ public class Author {
 
   public void setBirth(String birth) {
     this.birth = birth;
+  }
+
+  public void updateAuthor(NewAuthor newAuthor)
+  {
+    if(newAuthor.getBirth() != null) this.birth = newAuthor.getBirth();
+    if(newAuthor.getName() != null) this.name = newAuthor.getName();
+    if(newAuthor.getSurname() != null) this.surname = newAuthor.getSurname();
   }
 
   @Override
