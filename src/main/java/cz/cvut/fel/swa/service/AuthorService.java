@@ -28,8 +28,7 @@ public class AuthorService {
         {
             throw new InvalidParameterException();
         }
-        //return booksRepository.findByAuthor(authorId);
-        return null;
+        return booksRepository.findAllByAuthor(authorId);
     }
 
     public void deleteAuthor(Integer authorId) throws InvalidParameterException

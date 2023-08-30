@@ -11,6 +11,5 @@ import java.util.List;
 @Repository
 public interface BooksRepository extends JpaRepository<Book, String> {
 
-    /*@Query("SELECT b FROM tab_books b WHERE b.author = :author")
-    List<Book> findByAuthor(@Param("author") Integer author);*/
+    List<Book> findAllByAuthor(@Param("author") Integer author);
 }
