@@ -13,6 +13,6 @@ public interface BooksRepository extends JpaRepository<Book, String> {
 
     List<Book> findAllByAuthor(@Param("author") Integer author);
 
-    @Query(value = "SELECT b FROM tab_books b WHERE b.title LIKE '%:title%'", nativeQuery = true)
+    @Query(value = "SELECT * FROM tab_books WHERE title LIKE %:title%", nativeQuery = true)
     List<Book> findAllWithLikeTitle(@Param("title") String title);
 }

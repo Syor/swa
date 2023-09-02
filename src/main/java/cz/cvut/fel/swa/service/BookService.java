@@ -20,6 +20,7 @@ public class BookService {
 
     public List<Book> getAllBooks(String title) {
         if (title != null) {
+            System.out.println(title);
             return booksRepository.findAllWithLikeTitle(title);
         } else {
             return booksRepository.findAll();
