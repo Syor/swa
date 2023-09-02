@@ -18,14 +18,17 @@ public class BookService {
     @Autowired
     BooksRepository booksRepository;
 
-    public List<Book> getAllBooks() {
-        return booksRepository.findAll();
+    public List<Book> getAllBooks(String title) {
+        if (title != null) {
+            return booksRepository.findAllWithLikeTitle(title);
+        } else {
+            return booksRepository.findAll();
+        }
     }
 
     public Book getBook(String bookIsbn) throws InvalidParameterException {
         Optional<Book> book = booksRepository.findById(bookIsbn);
-        if(book.isEmpty())
-        {
+        if (book.isEmpty()) {
             throw new InvalidParameterException("Book with requested isbn does not exist");
         }
         return book.get();
@@ -39,7 +42,7 @@ public class BookService {
         booksRepository.delete(book.get());
     }
 
-    public String createBook(NewBook newBook) throws InvalidParameterException{
+    public String createBook(NewBook newBook) throws InvalidParameterException {
         Book book = new Book(newBook);
 
         Optional<Book> sameBook = booksRepository.findById(newBook.getIsbn());
@@ -51,7 +54,7 @@ public class BookService {
 
     }
 
-    public void updateBook(NewBook newBook, String bookIsbn) throws InvalidParameterException{
+    public void updateBook(NewBook newBook, String bookIsbn) throws InvalidParameterException {
 
         Optional<Book> book = booksRepository.findById(bookIsbn);
         if (book.isEmpty()) {

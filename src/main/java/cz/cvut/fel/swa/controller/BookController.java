@@ -28,7 +28,7 @@ public class BookController {
                                                   @RequestParam(value = "title", required = false) String title) {
         BooksResponse response = new BooksResponse();
 
-        List<Book> books = bookService.getAllBooks();
+        List<Book> books = bookService.getAllBooks(title);
 
         if (page != null && pageSize != null) {
             response.setPage(page);
