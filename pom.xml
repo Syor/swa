@@ -146,7 +146,7 @@
 						</goals>
 						<configuration>
 							<files>
-								<file>src/main/resources/application.properties</file>
+								<file>src/main/resources/application.yml</file>
 							</files>
 						</configuration>
 					</execution>
