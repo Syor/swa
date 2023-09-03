@@ -1,4 +1,11 @@
 spring:
+  application:
+    name: PetrService
+  cloud:
+    zookeeper:
+      connect-string: 35.247.47.255:2181
+      discovery:
+        enabled: true
   datasource:
     url: jdbc:postgresql://localhost:32768/postgres
     username: postgres
