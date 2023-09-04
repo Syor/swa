@@ -72,7 +72,7 @@ public class AuthorController {
         }
     }
 
-    @RequestMapping(value = "/{author-id}")
+    @PostMapping(value = "/{author-id}")
     public ResponseEntity<Void> postAuthor(@PathVariable("author-id") Integer authorId,
                                            @RequestBody NewAuthor newAuthor) {
         try{
@@ -110,9 +110,9 @@ public class AuthorController {
 
         try{
             Integer authorId = authorService.putAuthor(newAuthor);
-            return new ResponseEntity<Integer>(authorId, HttpStatus.OK);
+            return new ResponseEntity<>(authorId, HttpStatus.OK);
         } catch (InvalidParameterException | DataIntegrityViolationException e) {
-            return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
         }
     }
 
