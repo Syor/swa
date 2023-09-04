@@ -17,9 +17,10 @@ public class NewAuthor   {
   @JsonProperty("birth")
   private String birth;
 
-  public NewAuthor name(String name) {
+  public NewAuthor(String name, String surname, String birth) {
     this.name = name;
-    return this;
+    this.surname = surname;
+    this.birth = birth;
   }
 
   public String getName() {

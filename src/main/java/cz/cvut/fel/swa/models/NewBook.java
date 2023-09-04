@@ -26,9 +26,13 @@ public class NewBook   {
   @JsonProperty("author")
   private Integer author;
 
-  public NewBook title(String title) {
+  public NewBook(String title, String isbn, String published, String language, String genre, Integer author) {
     this.title = title;
-    return this;
+    this.isbn = isbn;
+    this.published = published;
+    this.language = language;
+    this.genre = genre;
+    this.author = author;
   }
 
   public String getTitle() {
