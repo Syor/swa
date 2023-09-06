@@ -8,6 +8,9 @@ import cz.cvut.fel.swa.service.BookService;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,15 +31,18 @@ public class BookController {
                                                   @RequestParam(value = "title", required = false) String title) {
         BooksResponse response = new BooksResponse();
 
-        List<Book> books = bookService.getAllBooks(title);
+        List<Book> books;
+
 
         if (page != null && pageSize != null) {
+            Pageable pageable = PageRequest.of(page, pageSize);
+            Page<Book> bookPage = bookService.getAllBooks(title, pageable);
             response.setPage(page);
             response.setPageSize(pageSize);
-            response.setTotalPages(books.size() / pageSize + 1);
-            response.setData(books.subList(page * pageSize, Math.min((page + 1) * pageSize, books.size())));
+            response.setTotalPages(bookPage.getTotalPages());
+            response.setData(bookPage.toList());
         } else {
-            response.setData(books);
+            response.setData(bookService.getAllBooks(title));
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

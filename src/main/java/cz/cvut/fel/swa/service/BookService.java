@@ -6,6 +6,8 @@ import cz.cvut.fel.swa.repository.BooksRepository;
 import org.postgresql.util.PSQLException;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
@@ -24,6 +26,15 @@ public class BookService {
             return booksRepository.findAllWithLikeTitle(title);
         } else {
             return booksRepository.findAll();
+        }
+    }
+
+    public Page<Book> getAllBooks(String title, Pageable pageable) {
+        if (title != null) {
+            System.out.println(title);
+            return booksRepository.findAllWithLikeTitle(title, pageable);
+        } else {
+            return booksRepository.findAll(pageable);
         }
     }
 
