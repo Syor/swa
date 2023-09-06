@@ -30,10 +30,6 @@ public class BookController {
                                                   @RequestParam(value = "pageSize", required = false) Integer pageSize,
                                                   @RequestParam(value = "title", required = false) String title) {
         BooksResponse response = new BooksResponse();
-
-        List<Book> books;
-
-
         if (page != null && pageSize != null) {
             Pageable pageable = PageRequest.of(page, pageSize);
             Page<Book> bookPage = bookService.getAllBooks(title, pageable);
