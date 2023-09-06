@@ -6,6 +6,8 @@ import cz.cvut.fel.swa.models.NewAuthor;
 import cz.cvut.fel.swa.repository.AuthorsRepository;
 import cz.cvut.fel.swa.repository.BooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.security.InvalidParameterException;
@@ -29,6 +31,16 @@ public class AuthorService {
             throw new InvalidParameterException();
         }
         return booksRepository.findAllByAuthor(authorId);
+    }
+
+    public Page<Book> getAuthorBooks(Integer authorId, Pageable pageable) throws InvalidParameterException
+    {
+        Optional<Author> author = authorsRepository.findById(authorId);
+        if(author.isEmpty())
+        {
+            throw new InvalidParameterException();
+        }
+        return booksRepository.findAllByAuthor(authorId, pageable);
     }
 
     public void deleteAuthor(Integer authorId) throws InvalidParameterException
@@ -67,6 +79,12 @@ public class AuthorService {
     {
         return authorsRepository.findAll();
     }
+
+    public Page<Author> getAllAuthors(Pageable pageable)
+    {
+        return authorsRepository.findAll(pageable);
+    }
+
 
     public Integer putAuthor(NewAuthor newAuthor) throws InvalidParameterException
     {

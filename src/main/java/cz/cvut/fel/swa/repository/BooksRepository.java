@@ -14,13 +14,11 @@ import java.util.List;
 public interface BooksRepository extends JpaRepository<Book, String> {
 
     List<Book> findAllByAuthor(@Param("author") Integer author);
+    Page<Book> findAllByAuthor(@Param("author") Integer author, Pageable pageable);
 
     @Query(value = "SELECT * FROM tab_books WHERE title LIKE %:title%", nativeQuery = true)
     List<Book> findAllWithLikeTitle(@Param("title") String title);
 
     @Query(value = "SELECT * FROM tab_books WHERE title LIKE %:title%", nativeQuery = true)
     Page<Book> findAllWithLikeTitle(@Param("title") String title, Pageable pageable);
-
-    @Query(value = "SELECT * FROM tab_books", nativeQuery = true)
-    Page<Book> findAll(Pageable pageable);
 }

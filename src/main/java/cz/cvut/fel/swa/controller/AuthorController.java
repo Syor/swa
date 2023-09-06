@@ -6,6 +6,9 @@ import cz.cvut.fel.swa.service.AuthorService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -27,19 +30,20 @@ public class AuthorController {
                                                         @RequestParam(value = "page", required = false) Integer page,
                                                         @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         try{
-            List<Book> books = authorService.getAuthorBooks(authorId);
             BooksResponse response = new BooksResponse();
 
             if(page != null && pageSize != null)
             {
-                response.setTotalPages(books.size() / pageSize + 1);
+                Pageable pageable = PageRequest.of(page, pageSize);
+                Page<Book> authorsBookPage = authorService.getAuthorBooks(authorId, pageable);
                 response.setPage(page);
                 response.setPageSize(pageSize);
-                response.setData(books.subList(page * pageSize, Math.min((page + 1) * pageSize, books.size())));
+                response.setTotalPages(authorsBookPage.getTotalPages());
+                response.setData(authorsBookPage.toList());
             }
             else
             {
-                response.setData(books);
+                response.setData(authorService.getAuthorBooks(authorId));
             }
 
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -90,17 +94,16 @@ public class AuthorController {
                                                       @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         AuthorsResponse response = new AuthorsResponse();
 
-        List<Author> authors = authorService.getAllAuthors();
-
         if (page != null && pageSize != null) {
+            Pageable pageable = PageRequest.of(page, pageSize);
+            Page<Author> authorPage = authorService.getAllAuthors(pageable);
             response.setPage(page);
             response.setPageSize(pageSize);
-            response.setTotalPages(authors.size() / pageSize + 1);
-            response.setData(authors.subList(page * pageSize, Math.min((page + 1) * pageSize, authors.size())));
+            response.setTotalPages(authorPage.getTotalPages());
+            response.setData(authorPage.toList());
         } else {
-            response.setData(authors);
+            response.setData(authorService.getAllAuthors());
         }
-
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
