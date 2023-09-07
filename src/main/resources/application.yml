@@ -7,7 +7,7 @@ spring:
       discovery:
         enabled: true
   datasource:
-    url: postgres://postgres:postgrespw@localhost:32768
+    url: postgres://postgres:postgrespw@postgres:5432
     username: postgres
     password: postgrespw
     driver-class-name: org.postgresql.Driver
