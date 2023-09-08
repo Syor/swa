@@ -7,6 +7,10 @@ spring:
       discovery:
         enabled: true
   datasource:
-    url: postgres://postgres:postgrespw@postgres:5432
-    username: postgres
-    password: postgrespw
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:demo;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
